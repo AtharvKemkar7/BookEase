@@ -1,0 +1,20 @@
+CREATE TABLE reminders (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    appointment_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    reminder_at TIMESTAMP(6) NOT NULL,
+    channel VARCHAR(16) NOT NULL,
+    status VARCHAR(16) NOT NULL,
+    sent_at TIMESTAMP(6) NULL,
+    created_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_reminders_appointment_time_channel (appointment_id, reminder_at, channel),
+    KEY idx_reminders_due (reminder_at, status),
+    KEY idx_reminders_user (user_id),
+    KEY idx_reminders_appointment (appointment_id),
+    CONSTRAINT fk_reminders_appointment FOREIGN KEY (appointment_id) REFERENCES appointments (id),
+    CONSTRAINT fk_reminders_user FOREIGN KEY (user_id) REFERENCES users (id),
+    CONSTRAINT chk_reminders_channel CHECK (channel IN ('IN_APP', 'EMAIL')),
+    CONSTRAINT chk_reminders_status CHECK (status IN ('PENDING', 'SENT', 'FAILED', 'CANCELLED'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

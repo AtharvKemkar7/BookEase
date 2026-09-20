@@ -1,0 +1,22 @@
+CREATE TABLE providers (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id BIGINT UNSIGNED NOT NULL,
+    category_id BIGINT UNSIGNED NOT NULL,
+    business_name VARCHAR(150) NOT NULL,
+    description VARCHAR(1000) NULL,
+    address VARCHAR(255) NULL,
+    city VARCHAR(120) NULL,
+    phone VARCHAR(32) NULL,
+    status VARCHAR(32) NOT NULL,
+    created_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_providers_user (user_id),
+    KEY idx_providers_category (category_id),
+    KEY idx_providers_status (status),
+    KEY idx_providers_city (city),
+    KEY idx_providers_status_city (status, city),
+    CONSTRAINT fk_providers_user FOREIGN KEY (user_id) REFERENCES users (id),
+    CONSTRAINT fk_providers_category FOREIGN KEY (category_id) REFERENCES categories (id),
+    CONSTRAINT chk_providers_status CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED', 'SUSPENDED'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
